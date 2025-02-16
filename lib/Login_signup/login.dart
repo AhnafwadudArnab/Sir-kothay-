@@ -2,7 +2,8 @@
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothay/Login_signup/signup.dart';
+import 'package:sirkothayy/Dashboards/D1.dart';
+import 'package:sirkothayy/Login_signup/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -196,9 +197,23 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 backgroundColor: const Color.fromARGB(255, 96, 180, 219),
               ),
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Perform registration logic
-                }
+              if (_formKey.currentState!.validate()) {
+              // Perform registration logic
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => D1Page(
+                  name: nameController.text,
+                  email: emailController.text,
+                  bio: '',
+                  organization: '',
+                  phone: '',
+                  designation: '',
+                  roomNumber: '',
+                ),
+                ),
+              );
+              }
               },
               child: const Text(
                 'Login',

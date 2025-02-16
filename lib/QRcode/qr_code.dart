@@ -1,15 +1,11 @@
 // ignore_for_file: no_logic_in_create_state
 
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
-import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class AppColor {
@@ -27,13 +23,12 @@ class MainQRcodepage extends StatefulWidget {
 class _MainQRcodepageState extends State<MainQRcodepage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _BioController = TextEditingController();
-  final TextEditingController _DesignationController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _designationController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _organazitionsController =
-      TextEditingController();
+  final TextEditingController _organizationsController = TextEditingController();
   final GlobalKey _qrkey = GlobalKey();
-  bool DirExist = false;
+  bool dirExist = false;
   dynamic externalDir = 'Downloads/storage/emulated/0/QRCode.png';
   String data = 'Hello';
 
@@ -68,9 +63,9 @@ class _MainQRcodepageState extends State<MainQRcodepage> {
         i++;
       }
       //path already exist or not//
-      DirExist = await Directory('$externalDir').exists();
+      dirExist = await Directory('$externalDir').exists();
 
-      if (!DirExist) {
+      if (!dirExist) {
         await Directory('$externalDir').create(recursive: true);
       }
 
@@ -113,10 +108,99 @@ class _MainQRcodepageState extends State<MainQRcodepage> {
                   controller: _nameController,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
-
                     labelText: 'Name',
                     labelStyle: TextStyle(color: Colors.grey),
                     hintText: 'Enter your name',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Enter your email',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _bioController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Bio',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Enter your bio',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _designationController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Designation',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Enter your designation',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Phone',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Enter your phone number',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _organizationsController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Organizations',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Enter your organizations',
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue, width: 2),
                     ),
@@ -169,6 +253,12 @@ class _MainQRcodepageState extends State<MainQRcodepage> {
                   'Save QR Code',
                   style: TextStyle(color: AppColor.white, fontSize: 18),
                 ),
+              ),
+              const SizedBox(height: 20),
+              // New widget added here
+              Text(
+                'This is a new widget added at the bottom',
+                style: TextStyle(fontSize: 16, color: Colors.black),
               ),
             ],
           ),

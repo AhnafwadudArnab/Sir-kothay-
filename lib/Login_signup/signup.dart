@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothay/Dashboards/D1.dart';
+import 'package:sirkothayy/Dashboards/D1.dart';
 
 import 'login.dart';
 
@@ -144,7 +144,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height / 1.79,
       width: MediaQuery.of(context).size.width,
       // color: const Color.fromARGB(141, 0, 0, 0).withOpacity(0.3),
@@ -264,6 +264,11 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 builder: (context) => D1Page(
                   name: nameController.text,
                   email: emailController.text,
+                  bio: '',
+                  organization: '',
+                  phone: '',
+                  designation: '',
+                  roomNumber: '',
                 ),
                 ),
               );
