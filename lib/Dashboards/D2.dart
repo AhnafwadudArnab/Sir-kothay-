@@ -1,148 +1,146 @@
 import 'package:flutter/material.dart';
+class D2Page extends StatefulWidget {
+  final String name;
+  final String email;
+  final String phone;
+  final String designation;
+  final String organization;
+  final String bio;
+  final String roomNumber;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const D2Page({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.designation,
+    required this.organization,
+    required this.bio,
+    required this.roomNumber, required String message,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MessageBoxScreen(),
-    );
-  }
+  _D2PageState createState() => _D2PageState();
 }
 
-class MessageBoxScreen extends StatelessWidget {
-  const MessageBoxScreen({super.key});
-
+class _D2PageState extends State<D2Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile & Messages"),
-        backgroundColor: Colors.blueAccent,
+        title: Text("View Page"),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ProfileSection(),
-            SizedBox(height: 16.0),
-            QRSection(),
-            SizedBox(height: 16.0),
-            MessageBox(),
-            Spacer(),
-            AddMessageButton(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProfileSection extends StatelessWidget {
-  const ProfileSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            CircleAvatar(radius: 30, backgroundColor: Colors.grey),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Ahanaf 222", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Text("aarnab222126@gmail.com", style: TextStyle(color: Colors.grey[700])),
-                  Text("4564656219"),
-                  Text("Organization: ssss", style: TextStyle(color: Colors.grey[700]))
-                ],
+      body: Center(
+        child: Container(
+          width: 360,
+          height: 450,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(242, 245, 137, 13),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
               ),
-            ),
-            ElevatedButton(onPressed: () {}, child: Text("Edit"))
-          ],
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                image: DecorationImage(
+                image: AssetImage('assets/user.gif'),
+                fit: BoxFit.cover,
+                ),
+              ),
+              ),
+
+              Text(
+              'Name: ${widget.name}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Email: ${widget.email}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Phone Number: ${widget.phone}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Designation: ${widget.designation}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Organizations: ${widget.organization}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Bio: ${widget.bio}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 7),
+              Text(
+              'Room Number: ${widget.roomNumber}',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              Container(
+                
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                'This is a message box',
+                style: TextStyle(fontSize: 15, color: Colors.black,
+                height: 5,
+                ),
+              ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class QRSection extends StatelessWidget {
-  const QRSection({super.key});
+class EditProfileForm extends StatelessWidget {
+  const EditProfileForm({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // QrImage(
-            //   data: "Ahanaf 222",
-            //   version: QrVersions.auto,
-            //   size: 100.0,
-            // ),
-            SizedBox(height: 8),
-            ElevatedButton(onPressed: () {}, child: Text("Download"))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MessageBox extends StatelessWidget {
-  const MessageBox({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("45445", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(onPressed: () {}, child: Text("Deactivate")),
-                SizedBox(width: 8),
-                ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.amber), child: Text("Edit")),
-                SizedBox(width: 8),
-                ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: Text("Delete")),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AddMessageButton extends StatelessWidget {
-  const AddMessageButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
-        onPressed: () {},
-        child: Icon(Icons.add_comment),
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(decoration: InputDecoration(labelText: 'Name')),
+          TextField(decoration: InputDecoration(labelText: 'Email')),
+          // Add more fields as needed
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Save'),
+          ),
+        ],
       ),
     );
   }

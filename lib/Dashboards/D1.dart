@@ -1,6 +1,17 @@
-// ignore_for_file: deprecated_member_use
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothayy/Dashboards/edit_form.dart';
+import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sirkothayy/Dashboards/D2.dart' as d2;
+import 'package:sirkothayy/Dashboards/edit_form.dart' as edit_form;
+import 'package:sirkothayy/Login_signup/login.dart';
+
 class D1Page extends StatefulWidget {
   final String name;
   final String email;
@@ -20,11 +31,79 @@ class D1Page extends StatefulWidget {
     required this.roomNumber,
   });
   @override
+  // ignore: library_private_types_in_public_api
   _D1PageState createState() => _D1PageState();
 }
+
 class _D1PageState extends State<D1Page> {
+  final GlobalKey _qrkey = GlobalKey();
   bool isActive = true;
   bool isqrActive = true;
+  bool isProfileComplete = false;
+  bool isQRCodeGenerated = false;
+  String messege = '';
+  String data = '';
+  void _handleMessageSave(String message) {
+    if (kDebugMode) {
+      print('Message saved: $message');
+    }
+  }
+
+  bool dirExist = false;
+  // dynamic externalDir = 'Downloads/storage/emulated/0/QRCode.png';
+  // ignore: unused_element
+
+  Future<void> _captureAndSavePng() async {
+    try {
+      RenderRepaintBoundary boundary =
+          _qrkey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      // Save to the app's document directory instead of external storage
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath = File('${directory.path}/QRCode_preview.png');
+      await imagePath.writeAsBytes(pngBytes);
+      if (kDebugMode) {
+        print("Image saved to: ${imagePath.path}");
+      }
+
+      // Optionally, save to gallery
+      final result = await ImageGallerySaver.saveFile(imagePath.path);
+      if (result['isSuccess']) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("QR Code saved to gallery!")));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to save QR Code to gallery!")),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error saving QR code: $e");
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to save QR Code!")));
+    }
+  }
+
+  Future<void> requestPermissions() async {
+    var status = await Permission.storage.request();
+    if (status.isGranted) {
+      if (kDebugMode) {
+        print("Permission granted!");
+      }
+    } else {
+      if (kDebugMode) {
+        print("Permission denied!");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +113,29 @@ class _D1PageState extends State<D1Page> {
           borderRadius: BorderRadius.circular(9),
           child: Image.asset('assets/sirkothayLogo.png', height: 40),
         ),
-        backgroundColor: const Color.fromARGB(255, 76, 135, 175),
+        backgroundColor: const Color.fromARGB(255, 154, 172, 184),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder:
+                      (context) => LoginPage(), // Replace with your login page
+                ),
+              );
+            },
+            child: Text('Logout', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
+
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 15),
               Container(
                 width: 360,
                 height: 380,
@@ -82,7 +177,7 @@ class _D1PageState extends State<D1Page> {
                                 bottom:
                                     MediaQuery.of(context).viewInsets.bottom,
                               ),
-                              child: EditProfileForm(),
+                              child: edit_form.EditProfileForm(),
                             );
                           },
                         );
@@ -129,10 +224,10 @@ class _D1PageState extends State<D1Page> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               Container(
                 width: 360,
-                height: 225,
+                height: 325,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(241, 109, 176, 214),
                   borderRadius: BorderRadius.circular(20),
@@ -141,7 +236,7 @@ class _D1PageState extends State<D1Page> {
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 5,
                       blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
+                      offset: Offset(0, 3),
                     ),
                   ],
                 ),
@@ -153,37 +248,70 @@ class _D1PageState extends State<D1Page> {
                       'Get the QR Code from here!!',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 150,
-                          margin: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage('assets/qr.gif'),
-                              fit: BoxFit.cover,
-                            ),
+                    SizedBox(height: 15),
+                    if (!isProfileComplete)
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            isProfileComplete = true;
+                            //     showModalBottomSheet(
+                            //   context: context,
+                            //   isScrollControlled: true,
+                            //   builder: (BuildContext context) {
+                            //     return Padding(
+                            //       padding: EdgeInsets.only(
+                            //         bottom:
+                            //             MediaQuery.of(context).viewInsets.bottom,
+                            //       ),
+                            //       child: EditProfileForm(),
+                            //     );
+                            //   },
+                            // );
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        child: Text(
+                          "Please complete your profile to generate QR code !",
+                        ),
+                      )
+                    //SizedBox(height: 100),
+                    else if (!isQRCodeGenerated)
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            isQRCodeGenerated = true;
+                            isqrActive = true;
+                            data =
+                                '${widget.name}\n${widget.email}\n${widget.phone}\n${widget.designation}\n${widget.organization}\n${widget.bio}\n${widget.roomNumber}';
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                        ),
+                        child: Text(
+                          "Generate",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      )
+                    else
+                      Column(
+                        children: [
+                          QrImageView(data: data, size: 200),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              _captureAndSavePng();
+                            },
+                            child: Text("Download"),
                           ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              // Add logic to toggle the status
-                              isqrActive = !isqrActive;
-                            });
-                          },
-                          child: Text(isqrActive ? "Genarate" : "Download"),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               Container(
                 width: 360,
                 height: 120,
@@ -206,13 +334,13 @@ class _D1PageState extends State<D1Page> {
                     SizedBox(height: 10),
                     Center(
                       child: Text(
-                        "Status: Active",
+                        messege,
                         style: TextStyle(fontSize: 18),
                       ), //text paste here-Status: Active//
                     ),
                     SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
                           onPressed: () {
@@ -224,9 +352,7 @@ class _D1PageState extends State<D1Page> {
                           child: Text(isActive ? "Deactivate" : "Activate"),
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.amber,
                           ),
@@ -248,13 +374,42 @@ class _D1PageState extends State<D1Page> {
           ),
         ),
       ),
-      floatingActionButton: AddMessageButton(),
+      floatingActionButton: AddMessageButton(
+        name: widget.name,
+        email: widget.email,
+        bio: widget.bio,
+        organization: widget.organization,
+        phone: widget.phone,
+        designation: widget.designation,
+        roomNumber: widget.roomNumber,
+        message: '',
+      ),
     );
   }
 }
 
 class AddMessageButton extends StatelessWidget {
-  const AddMessageButton({super.key});
+  final TextEditingController _messageController = TextEditingController();
+  final String name;
+  final String email;
+  final String bio;
+  final String organization;
+  final String phone;
+  final String designation;
+  final String roomNumber;
+  final String message;
+
+  AddMessageButton({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.bio,
+    required this.organization,
+    required this.phone,
+    required this.designation,
+    required this.roomNumber,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -265,58 +420,87 @@ class AddMessageButton extends StatelessWidget {
         children: [
           FloatingActionButton(
             backgroundColor: const Color.fromARGB(255, 171, 214, 221),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Add Message', style: TextStyle(fontSize: 18)),
+                          SizedBox(height: 8),
+                          TextField(controller: _messageController),
+                          SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Cancel"),
+                              ),
+                              SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  String message = _messageController.text;
+                                  Get.snackbar(
+                                    'Message Added',
+                                    message,
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                  Navigator.pop(context);
+                                  // Call another function with the message
+                                  (context
+                                          .findAncestorStateOfType<
+                                            _D1PageState
+                                          >())
+                                      ?._handleMessageSave(message);
+                                },
+                                child: Text("Save"),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
             child: Icon(Icons.add_comment),
           ),
           SizedBox(height: 10),
           FloatingActionButton(
             backgroundColor: const Color.fromARGB(255, 76, 135, 175),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => d2.D2Page(
+                        name: name,
+                        email: email,
+                        bio: bio,
+                        organization: organization,
+                        phone: phone,
+                        designation: designation,
+                        roomNumber: roomNumber,
+                        message: '',
+                      ),
+                ),
+              );
+            },
             child: Icon(Icons.view_week),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class MessageBox extends StatelessWidget {
-  const MessageBox({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("45445", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(onPressed: () {}, child: Text("Deactivate")),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                  ),
-                  child: Text("Edit"),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: Text("Delete"),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

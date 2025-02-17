@@ -14,19 +14,30 @@ class AppColor {
 }
 
 class MainQRcodepage extends StatefulWidget {
-  const MainQRcodepage({super.key});
+  final String name;
+  final String email;
+  final String phone;
+  final String designation;
+  final String organization;
+  final String roomNumber;
+  final String bio;
+
+  const MainQRcodepage({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.designation,
+    required this.organization,
+    required this.roomNumber,
+    required this.bio,
+  });
 
   @override
   State<StatefulWidget> createState() => _MainQRcodepageState();
 }
 
 class _MainQRcodepageState extends State<MainQRcodepage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _designationController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _organizationsController = TextEditingController();
   final GlobalKey _qrkey = GlobalKey();
   bool dirExist = false;
   dynamic externalDir = 'Downloads/storage/emulated/0/QRCode.png';
@@ -102,118 +113,45 @@ class _MainQRcodepageState extends State<MainQRcodepage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Name',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your name',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              Text(
+                'Name: ${widget.name}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Email',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your email',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              SizedBox(height: 7),
+              Text(
+                'Email: ${widget.email}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _bioController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Bio',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your bio',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              SizedBox(height: 7),
+              Text(
+                'Phone Number: ${widget.phone}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _designationController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Designation',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your designation',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              SizedBox(height: 7),
+              Text(
+                'Designation: ${widget.designation}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Phone',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your phone number',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              SizedBox(height: 7),
+              Text(
+                'Organizations: ${widget.organization}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _organizationsController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    labelText: 'Organizations',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintText: 'Enter your organizations',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                  ),
-                ),
+              SizedBox(height: 7),
+              Text(
+                'Bio: ${widget.bio}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
+              SizedBox(height: 7),
+              Text(
+                'Room Number: ${widget.roomNumber}',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              const SizedBox(height: 20),
               RawMaterialButton(
                 onPressed: () {
                   setState(() {
-                    data = _nameController.text;
+                    data ='${widget.name}\n${widget.email}\n${widget.phone}\n${widget.designation}\n${widget.organization}\n${widget.roomNumber}\n${widget.bio}';
                   });
                 },
                 fillColor: AppColor.primary,
@@ -255,11 +193,6 @@ class _MainQRcodepageState extends State<MainQRcodepage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // New widget added here
-              Text(
-                'This is a new widget added at the bottom',
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
             ],
           ),
         ),
