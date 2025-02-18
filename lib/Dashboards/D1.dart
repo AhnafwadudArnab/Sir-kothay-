@@ -1,16 +1,18 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously, unnecessary_brace_in_string_interps
+
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sirkothayy/Dashboards/D2.dart' as d2;
-import 'package:sirkothayy/Dashboards/edit_form.dart' as edit_form;
-import 'package:sirkothayy/Login_signup/login.dart';
+import 'package:sirrkothay/Dashboards/D2.dart' as d2 show D2Page;
+
+import '../Login_signup/login.dart';
+import 'edit_form.dart' as edit_form show EditProfileForm;
 
 class D1Page extends StatefulWidget {
   final String name;
@@ -20,6 +22,7 @@ class D1Page extends StatefulWidget {
   final String phone;
   final String designation;
   final String roomNumber;
+  final String messages = '';
   const D1Page({
     super.key,
     required this.name,
@@ -48,11 +51,17 @@ class _D1PageState extends State<D1Page> {
       print('Message saved: $message');
     }
   }
+  List<String> messages = [];
+  int tapCount = 0;
+
+  void _addMessage() {
+    setState(() {
+      tapCount++;
+      messages.add("New Message $tapCount");
+    });
+  }
 
   bool dirExist = false;
-  // dynamic externalDir = 'Downloads/storage/emulated/0/QRCode.png';
-  // ignore: unused_element
-
   Future<void> _captureAndSavePng() async {
     try {
       RenderRepaintBoundary boundary =
@@ -71,17 +80,9 @@ class _D1PageState extends State<D1Page> {
         print("Image saved to: ${imagePath.path}");
       }
 
-      // Optionally, save to gallery
-      final result = await ImageGallerySaver.saveFile(imagePath.path);
-      if (result['isSuccess']) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("QR Code saved to gallery!")));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to save QR Code to gallery!")),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("QR Code saved to app directory!")),
+      );
     } catch (e) {
       if (kDebugMode) {
         print("Error saving QR code: $e");
@@ -138,7 +139,7 @@ class _D1PageState extends State<D1Page> {
               SizedBox(height: 15),
               Container(
                 width: 360,
-                height: 380,
+                height: 400,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(242, 245, 137, 13),
                   borderRadius: BorderRadius.circular(20),
@@ -227,7 +228,7 @@ class _D1PageState extends State<D1Page> {
               SizedBox(height: 15),
               Container(
                 width: 360,
-                height: 325,
+                height: 335,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(241, 109, 176, 214),
                   borderRadius: BorderRadius.circular(20),
@@ -311,82 +312,106 @@ class _D1PageState extends State<D1Page> {
                   ],
                 ),
               ),
-              SizedBox(height: 15),
-              Container(
+                SizedBox(height: 15),
+                Container(
                 width: 360,
-                height: 120,
+                height: MediaQuery.of(context).size.height * 0.55,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(241, 109, 176, 214),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
                   ],
                 ),
-
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                        messege,
-                        style: TextStyle(fontSize: 18),
-                      ), //text paste here-Status: Active//
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              // Add logic to toggle the status
-                              isActive = !isActive;
-                            });
-                          },
-                          child: Text(isActive ? "Deactivate" : "Activate"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                          ),
-                          child: Text("Edit"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                          ),
-                          child: Text("Delete"),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 28),
+                  for (int i = 0; i < messages.length; i++) _buildMessageCard(messages[i]),
                   ],
                 ),
+                ),
+              ],
+              ),
+            ),
+            ),
+            floatingActionButton: AddMessageButton(
+              name: widget.name,
+              email: widget.email,
+              bio: widget.bio,
+              organization: widget.organization,
+              phone: widget.phone,
+              designation: widget.designation,
+              roomNumber: widget.roomNumber,
+              message: '',
+            ),
+          );
+          }
+
+          Widget _buildMessageCard(String message) {
+          return Container(
+            width: 290,
+            height: 130,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
               ),
             ],
-          ),
-        ),
-      ),
-      floatingActionButton: AddMessageButton(
-        name: widget.name,
-        email: widget.email,
-        bio: widget.bio,
-        organization: widget.organization,
-        phone: widget.phone,
-        designation: widget.designation,
-        roomNumber: widget.roomNumber,
-        message: '',
-      ),
-    );
-  }
-}
+            ),
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                Text(
+                message,
+                style: const TextStyle(fontSize: 18),
+                ),
+              // FloatingActionButton(
+              //   onPressed: _addMessage,
+              //   child: const Icon(Icons.add),
+              // ),
+              const SizedBox(height: 10),
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+
+                ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                  isActive = !isActive;
+                  });
+                },
+                child: Text(isActive ? "Deactivate" : "Activate"),
+                ),
+                ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                child: const Text("Edit"),
+                ),
+                ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text("Delete"),
+                ),
+              ],
+              ),
+            ],
+            ),
+          );
+          }
+        }
 
 class AddMessageButton extends StatelessWidget {
   final TextEditingController _messageController = TextEditingController();
@@ -463,6 +488,23 @@ class AddMessageButton extends StatelessWidget {
                                             _D1PageState
                                           >())
                                       ?._handleMessageSave(message);
+                                  // Navigate to another page with the message
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => d2.D2Page(
+                                            name: name,
+                                            email: email,
+                                            bio: bio,
+                                            organization: organization,
+                                            phone: phone,
+                                            designation: designation,
+                                            roomNumber: roomNumber,
+                                            message: message,
+                                          ),
+                                    ),
+                                  );
                                 },
                                 child: Text("Save"),
                               ),

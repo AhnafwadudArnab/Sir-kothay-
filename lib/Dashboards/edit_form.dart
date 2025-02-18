@@ -2,8 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothayy/Dashboards/D1.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'D1.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 class D2Page extends StatefulWidget {
   final String name;
@@ -7,6 +9,7 @@ class D2Page extends StatefulWidget {
   final String organization;
   final String bio;
   final String roomNumber;
+  final String message;
 
   const D2Page({
     super.key,
@@ -15,8 +18,9 @@ class D2Page extends StatefulWidget {
     required this.phone,
     required this.designation,
     required this.organization,
+    required this.roomNumber,
+    required this.message, 
     required this.bio,
-    required this.roomNumber, required String message,
   });
 
   @override
@@ -63,54 +67,55 @@ class _D2PageState extends State<D2Page> {
                 ),
               ),
               ),
-
+              SizedBox(height: 20),
               Text(
               'Name: ${widget.name}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Email: ${widget.email}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Phone Number: ${widget.phone}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Designation: ${widget.designation}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Organizations: ${widget.organization}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Bio: ${widget.bio}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 7),
               Text(
               'Room Number: ${widget.roomNumber}',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               SizedBox(height: 20),
               Container(
-                
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Text(
-                'This is a message box',
-                style: TextStyle(fontSize: 15, color: Colors.black,
-                height: 5,
+              child: Column(
+                children: [
+                Text(
+                  '${widget.message}',
+                  style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
+                ],
               ),
               ),
             ],

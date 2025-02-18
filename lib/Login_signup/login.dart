@@ -2,8 +2,9 @@
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothayy/Dashboards/D1.dart';
-import 'package:sirkothayy/Login_signup/signup.dart';
+import 'package:sirrkothay/Dashboards/D1.dart';
+import 'package:sirrkothay/Login_signup/signup.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

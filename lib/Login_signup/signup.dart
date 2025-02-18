@@ -1,8 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sirkothayy/Dashboards/D1.dart';
 
+
+import '../Dashboards/D1.dart';
 import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
